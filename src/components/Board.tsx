@@ -28,6 +28,7 @@ const Board: React.FC<BoardProps> = ({
   const [newSubcategory, setNewSubcategory] = useState<string>("");
   const [selectedCategoryId, setSelectedCategoryId] = useState<number>(-1);
   const [services, setServices] = useState<Service[]>([]);
+  const [newService, setNewService] = useState<string>("");
 
   interface Category {
     id: number;
@@ -58,6 +59,7 @@ const Board: React.FC<BoardProps> = ({
         id: newCategoryId,
         name: `${selectedOption} ${newCategoryId}`,
         subcategories: [],
+
         editing: true,
       },
     ]);
@@ -208,11 +210,12 @@ const Board: React.FC<BoardProps> = ({
         ...prevServices,
         {
           id: prevServices.length + 1,
-          subcategoryId: selectedCategoryId, // Add this line to associate with the subcategory
-          name: newSubcategory,
+          subcategoryId: selectedCategoryId,
+          name: newService, 
           editing: true,
         },
       ]);
+      setNewService(""); 
       setShowPopup(false);
     }
   };
@@ -232,6 +235,13 @@ const Board: React.FC<BoardProps> = ({
       )
     );
   };
+  const setEditingServiceId = (index: number) => {
+    setServices((prevServices) =>
+      prevServices.map((service, i) =>
+        i === index ? { ...service, editing: true } : service
+      )
+    );
+  };
 
   const deleteService = (index: number) => {
     setServices((prevServices) => prevServices.filter((_, i) => i !== index));
@@ -245,7 +255,8 @@ const Board: React.FC<BoardProps> = ({
     return subcategoryServices.map((service, index) => (
       <div key={service.id} className="service">
         {service.editing ? (
-           <div className="category-box">
+          // Service editing mode
+          <div className="category-box">
             <div className="input-container">
               <input
                 type="text"
@@ -263,14 +274,21 @@ const Board: React.FC<BoardProps> = ({
             </button>
           </div>
         ) : (
+          // Service display mode
           <div className="service-box">
             <div className="service-block">{service.name}</div>
             <div className="service-btn-box">
               <button
-                className="btn-add"
+                className="bt-add"
                 onClick={() => addService(selectedCategoryId)}
               >
                 <AddIcon className="icon" />
+              </button>
+              <button
+                className="bt-edit-name"
+                onClick={() => setEditingServiceId(index)}
+              >
+                <EditIcon className="icon" />
               </button>
               <button
                 className="bt-delete"
@@ -343,7 +361,7 @@ const Board: React.FC<BoardProps> = ({
             </div>
           </div>
         )}
-        {renderServices(subcategory.id)}
+        <div className="render-service">{renderServices(subcategory.id)}</div>
       </div>
     ));
   };
@@ -422,6 +440,7 @@ const Board: React.FC<BoardProps> = ({
         </button>
       </div>
       <div
+        className="draggable-board"
         style={{
           transform: `translate(${bodyPosition.x}px, ${
             bodyPosition.y
@@ -442,7 +461,7 @@ const Board: React.FC<BoardProps> = ({
         <PopUp
           confirmSubcategory={confirmSubcategory}
           confirmService={confirmService}
-          setShowPopup={confirmService}
+          setShowPopup={setShowPopup}
         />
       )}
     </div>
@@ -450,4 +469,3 @@ const Board: React.FC<BoardProps> = ({
 };
 
 export default Board;
-

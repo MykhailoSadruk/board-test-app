@@ -3,8 +3,6 @@ import Header from "./components/Header";
 import "./App.scss";
 import Board from "./components/Board";
 
-
-
 const App: React.FC = () => {
   const [bodyPosition, setBodyPosition] = useState({ x: 0, y: 0 });
   const [bodyScale, setBodyScale] = useState<number>(100);
@@ -35,12 +33,26 @@ const App: React.FC = () => {
     setBodyScale((prev) => prev + scaleChange);
   };
 
+  const centerBody = () => {
+    const centerX = window.innerWidth / 2;
+    const centerY = window.innerHeight / 2;
+  
+    const newBodyPosition = {
+      x: centerX - (window.innerWidth / (2 * (bodyScale / 100))),
+      y: centerY - (window.innerHeight / (2 * (bodyScale / 100))),
+    };
+  
+    setBodyPosition(newBodyPosition);
+  };
+  
+
   return (
     <div className="app">
       <Header
         setBodyScale={setBodyScale}
         bodyScale={bodyScale}
         handleScaleChange={handleScaleChange}
+        centerBody={centerBody}
       />
       <Board
         bodyPosition={bodyPosition}

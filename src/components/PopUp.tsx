@@ -5,12 +5,14 @@ interface PopupProps {
   setShowPopup: (show: boolean) => void;
   confirmSubcategory: any;
   confirmService: any;
+
 }
 
 const PopUp: React.FC<PopupProps> = ({
   setShowPopup,
   confirmService,
   confirmSubcategory,
+
 }) => {
   return (
     <div className="popup">
